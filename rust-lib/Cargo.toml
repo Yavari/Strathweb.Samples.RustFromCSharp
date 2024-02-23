@@ -9,6 +9,10 @@ crate-type = ["lib", "cdylib", "staticlib"]
 [dependencies]
 qrcodegen = "1.8.0"
 thiserror = "1.0"
+polars = "0.37.0"
+tokio = { version = "1", features = ["full"] }
+once_cell = "1.19.0"
+thread_local = "1.1.8"
 uniffi = { version = "0.25.0", features=["build"] }
 
 [build-dependencies]

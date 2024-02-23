@@ -1,6 +1,7 @@
 namespace rust_lib {
     string generate_qr_code_svg([ByRef]string text);
-
+    sequence<string> test([ByRef]string text);
+    
     [Throws=QrError]
     QrCode encode_text([ByRef]string text, QrCodeEcc ecl);
 };

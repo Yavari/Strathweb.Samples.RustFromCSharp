@@ -1,7 +1,7 @@
 uniffi::include_scaffolding!("rust-lib");
 
 use std::sync::Arc;
-
+use tokio::runtime::{Builder, Runtime};
 use qrcodegen::{QrCode, QrCodeEcc};
 use thiserror::Error;
 
@@ -29,6 +29,22 @@ pub fn generate_qr_code_svg(text: &str) -> String {
 	to_svg_string(&qr, 4)
 }
 
+pub fn test(text: &str) -> Vec<String> {
+    let result = rt().unwrap().block_on(async {
+        read(text).await
+    });
+
+	vec!(result, text.into())
+}
+
+pub async fn read(file: &str) -> String {
+	tokio::fs::read(file).await.map(|data| {
+        String::from_utf8(data)
+    }).map_err(|_e| {
+        "fel".to_string()
+    }).expect("test").expect("test2")
+}
+
 // from https://github.com/nayuki/QR-Code-generator/blob/master/rust/examples/qrcodegen-demo.rs
 fn to_svg_string(qr: &QrCode, border: i32) -> String {
 	assert!(border >= 0, "Border must be non-negative");
@@ -53,4 +69,18 @@ fn to_svg_string(qr: &QrCode, border: i32) -> String {
 	result += "\" fill=\"#000000\"/>\n";
 	result += "</svg>\n";
 	result
+}
+
+
+fn rt() -> Result<&'static Runtime, std::io::Error> {                                                                                                                                                                                                        
+    use once_cell::sync::Lazy;                                                                                                                                                                                                                               
+    use once_cell::unsync::OnceCell;                                                                                                                                                                                                                         
+    use thread_local::ThreadLocal;                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                         
+    static RT: Lazy<ThreadLocal<OnceCell<Runtime>>> = Lazy::new(ThreadLocal::new);                                                                                                                                                                  
+    RT.get_or(OnceCell::new).get_or_try_init(|| {                                                                                                                                                                                                            
+        Builder::new_current_thread()                                                                                                                                                                                                               
+            .enable_io()                                                                                                                                                                                                                                     
+            .build()                                                                                                                                                                                                              
+    })                                                                                                                                                                                                                                                       
 }
