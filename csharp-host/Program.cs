@@ -12,7 +12,7 @@ Console.WriteLine("");
 Console.WriteLine("Example 2:");
 Console.WriteLine("");
 
-var qrCode = RustLibMethods.EncodeText("https://strathweb.com", QrCodeEcc.MEDIUM);
+var qrCode = RustLibMethods.EncodeText("https://strathweb.com", QrCodeEcc.Medium);
 PrintQr(qrCode);
 
 static void PrintQr(QrCode qr)
